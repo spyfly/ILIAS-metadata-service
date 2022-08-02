@@ -1,6 +1,6 @@
 import iliasRESTApiClient from "./iliasRESTApiClient.js";
 import keyword_extractor from "keyword-extractor";
-import {retext} from 'retext'
+import { retext } from 'retext'
 import retextPos from 'retext-pos'
 import retextKeywords from 'retext-keywords'
 
@@ -36,6 +36,7 @@ const metadataGenerationService = {
       obj_id: raw_data["obj_id"]
     }
 
+    //Multimedia Types
     if (raw_data["multimediaXml"]) {
       metadataObj.multimediaTypes = [];
       for (const multimediaResults of raw_data["multimediaXml"].matchAll(/<Format>([^<]*)<\/Format>/g)) {
@@ -43,13 +44,30 @@ const metadataGenerationService = {
       }
     }
 
+    //ILIAS Questions
     if (raw_data["questionsXml"]) {
       metadataObj.questionTypes = [];
       for (const questionResults of raw_data["questionsXml"].matchAll(/<fieldlabel>QUESTIONTYPE<\/fieldlabel><fieldentry>([^<]*)<\/fieldentry>/g)) {
-        metadataObj.questionTypes.push(questionResults[1]);
+        let questionType = "ILIAS.";
+        for (const questionString of questionResults[1].split(" ")) {
+          const lowerCaseString = questionString.toLowerCase();
+          questionType += lowerCaseString.charAt(0).toUpperCase() + lowerCaseString.slice(1);
+        }
+        metadataObj.questionTypes.push(questionType);
       }
     }
 
+    //H5P Questions
+    if (raw_data["questionsXhfp"] && raw_data["questionsXhfp"].length > 0) {
+      if (!metadataObj.questionTypes)
+        metadataObj.questionTypes = [];
+
+      for (const xhfpQuestion of raw_data["questionsXhfp"]) {
+        metadataObj.questionTypes.push(xhfpQuestion);
+      }
+    }
+
+    //Keywords
     if (raw_data["xmlContent"]) {
       // Remove XML Tags
       const textContent = raw_data["xmlContent"].replace(/<[^>]*>/g, ' ');
