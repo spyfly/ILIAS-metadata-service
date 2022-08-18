@@ -5,7 +5,7 @@ export default function(metadataGenerationService) {
     };
   
     async function GET(req, res, next) {
-      res.status(200).json(await metadataGenerationService.generateMetadata(req.params.ref_id));
+      metadataGenerationService.generateMetadata(req.params.ref_id).then(resp => res.status(200).json(resp)).catch(err => res.status(403).json(err))
     }
   
     // NOTE: We could also use a YAML string here.
