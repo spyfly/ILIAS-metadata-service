@@ -1,0 +1,8 @@
+{
+    "ILIAS": {
+        "apiPath": "http://192.168.1.1/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/api.php",
+        "apiKey": "abcdef",
+        "username": "root",
+        "password": "12345678"
+    }
+}
