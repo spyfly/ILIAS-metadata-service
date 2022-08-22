@@ -1,5 +1,6 @@
 import iliasRESTApiClient from "./iliasRESTApiClient.js";
 import keyword_extractor from "keyword-extractor";
+import multimediaProcessor from "./multimediaProcessor.js";
 import { retext } from 'retext'
 import retextPos from 'retext-pos'
 import retextKeywords from 'retext-keywords'
@@ -38,9 +39,14 @@ const metadataGenerationService = {
 
     //Multimedia Types
     if (raw_data["multimediaXml"]) {
-      metadataObj.multimediaTypes = [];
-      for (const multimediaResults of raw_data["multimediaXml"].matchAll(/<Format>([^<]*)<\/Format>/g)) {
+      //metadataObj.multimediaTypes = [];
+      /*for (const multimediaResults of raw_data["multimediaXml"].matchAll(/<Format>([^<]*)<\/Format>/g)) {
         metadataObj.multimediaTypes.push(multimediaResults[1]);
+      }*/
+      try {
+      metadataObj.multimedia = await multimediaProcessor.processMultimediaXml(raw_data["multimediaXml"]);
+      } catch (err) {
+        console.log(err)
       }
     }
 
