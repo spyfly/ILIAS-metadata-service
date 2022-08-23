@@ -2,6 +2,7 @@ import iliasRESTApiClient from "./iliasRESTApiClient.js";
 import keyword_extractor from "keyword-extractor";
 import multimediaProcessor from "./multimediaProcessor.js";
 import questionProcessorIlias from "./questionProcessorIlias.js";
+import questionProcessorXhfp from "./questionProcessorXhfp.js";
 import { retext } from 'retext'
 import retextPos from 'retext-pos'
 import retextKeywords from 'retext-keywords'
@@ -62,11 +63,11 @@ const metadataGenerationService = {
 
     //H5P Questions
     if (raw_data["questionsXhfp"] && raw_data["questionsXhfp"].length > 0) {
-      if (!metadataObj.questionTypes)
-        metadataObj.questionTypes = [];
+      if (!metadataObj.questions)
+        metadataObj.questions = [];
 
-      for (const xhfpQuestion of raw_data["questionsXhfp"]) {
-        metadataObj.questionTypes.push(xhfpQuestion);
+      for (const xhfpQuestionObj of raw_data["questionsXhfp"]) {
+        metadataObj.questions.push(await questionProcessorXhfp.processQuestion(xhfpQuestionObj));
       }
     }
 

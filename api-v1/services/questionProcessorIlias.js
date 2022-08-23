@@ -1,4 +1,3 @@
-import e from "express";
 import { XMLParser, XMLBuilder, XMLValidator } from "fast-xml-parser";
 
 const questionProcessorIlias = {
@@ -18,7 +17,7 @@ const questionProcessorIlias = {
                 questionItems.push(await this.processQuestionItem(questionsXml.questestinterop.item))
             }
         }
-        console.log(JSON.stringify(questionsXml))
+        //console.log(JSON.stringify(questionsXml))
         return questionItems;
     },
 
