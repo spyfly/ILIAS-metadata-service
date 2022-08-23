@@ -1,6 +1,7 @@
 import iliasRESTApiClient from "./iliasRESTApiClient.js";
 import keyword_extractor from "keyword-extractor";
 import multimediaProcessor from "./multimediaProcessor.js";
+import questionProcessorIlias from "./questionProcessorIlias.js";
 import { retext } from 'retext'
 import retextPos from 'retext-pos'
 import retextKeywords from 'retext-keywords'
@@ -44,7 +45,7 @@ const metadataGenerationService = {
         metadataObj.multimediaTypes.push(multimediaResults[1]);
       }*/
       try {
-      metadataObj.multimedia = await multimediaProcessor.processMultimediaXml(raw_data["multimediaXml"]);
+        metadataObj.multimedia = await multimediaProcessor.processMultimediaXml(raw_data["multimediaXml"]);
       } catch (err) {
         console.log(err)
       }
@@ -52,14 +53,10 @@ const metadataGenerationService = {
 
     //ILIAS Questions
     if (raw_data["questionsXml"]) {
-      metadataObj.questionTypes = [];
-      for (const questionResults of raw_data["questionsXml"].matchAll(/<fieldlabel>QUESTIONTYPE<\/fieldlabel><fieldentry>([^<]*)<\/fieldentry>/g)) {
-        let questionType = "ILIAS.";
-        for (const questionString of questionResults[1].split(" ")) {
-          const lowerCaseString = questionString.toLowerCase();
-          questionType += lowerCaseString.charAt(0).toUpperCase() + lowerCaseString.slice(1);
-        }
-        metadataObj.questionTypes.push(questionType);
+      try {
+        metadataObj.questions = await questionProcessorIlias.processQuestionsXml(raw_data["questionsXml"]);
+      } catch (err) {
+        console.log(err);
       }
     }
 
