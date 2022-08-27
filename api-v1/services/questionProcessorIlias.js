@@ -28,9 +28,30 @@ const questionProcessorIlias = {
             provider: "ILIAS",
             type: await this.extractQuestionType(questionItem),
             question: questionItem.presentation.flow.material.mattext['#text'],
-            choices: await this.extractChoices(questionItem)
+            choices: await this.extractChoices(questionItem),
+            interactivity: await this.extractInteractivity(questionItem)
         }
         return questionMetadata;
+    },
+
+    async extractInteractivity(questionItem) {
+        const maxAttempts = parseInt(questionItem['@_maxattempts']);
+        var customFeedbackResponses = {};
+        for (const feedbackItem of questionItem.itemfeedback) {
+            const feedbackId = feedbackItem['@_ident'].replace('response_', '');
+            if (feedbackId.length > 3) {
+                customFeedbackResponses[feedbackId] = feedbackItem.flow_mat.material.mattext['#text'];
+            }
+        }
+        const isInteractive = maxAttempts != 1;
+        const customFeedback = Object.keys(customFeedbackResponses).length > 0;
+
+        return {
+            interactive: isInteractive,
+            maxAttempts: maxAttempts,
+            customFeedback: customFeedback,
+            customFeedbackResponses: customFeedbackResponses
+        }
     },
 
     async extractQuestionType(questionItem) {

@@ -10,9 +10,19 @@ const questionProcessorXhfp = {
             id: xhfpQuestionObj.content_id,
             provider: "H5P",
             type: xhfpQuestionObj.name.replace("H5P.", ""),
+            interactivity: await this.extractInteractivity(xhfpParameters),
             xhfpParameters: xhfpParameters
         };
         return questionMetadata;
+    },
+
+    async extractInteractivity(xhfpParameters) {
+        const maxAttempts = xhfpParameters.behaviour.enableRetry ? 0 : 1;
+        const isInteractive = maxAttempts != 1;
+        return {
+            interactive: isInteractive,
+            maxAttempts: maxAttempts
+        }
     }
 }
 
