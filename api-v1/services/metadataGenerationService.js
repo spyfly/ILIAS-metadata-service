@@ -73,15 +73,24 @@ const metadataGenerationService = {
 
     //Keywords
     if (raw_data["xmlContent"]) {
-      // Remove XML Tags
-      const textContent = raw_data["xmlContent"].replace(/<[^>]*>/g, ' ');
-      metadataObj.keywords =
+      // Remove XML Tags and LaTeX Content
+      const textContent = raw_data["xmlContent"].replace(/<[^>]*>/g, ' ').replace(/(\[tex\])(.*?)(\[\/tex\])/g, ' ');
+      const rawKeywords =
         keyword_extractor.extract(textContent, {
           language: "german",
           remove_digits: true,
           return_changed_case: true,
           remove_duplicates: true,
         });
+
+      // Filter Keywords
+      var keywords = [];
+      for (const keyword of rawKeywords) {
+        if (keyword.length >= 3) {
+          keywords.push(keyword);
+        }
+      }
+      metadataObj.keywords = keywords;
     }
 
     return metadataObj;
