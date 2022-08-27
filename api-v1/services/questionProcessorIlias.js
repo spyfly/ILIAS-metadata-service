@@ -22,16 +22,34 @@ const questionProcessorIlias = {
     },
 
     async processQuestionItem(questionItem) {
-        const questionMetadata = {
-            title: questionItem['@_title'],
-            id: questionItem['@_ident'],
-            provider: "ILIAS",
-            type: await this.extractQuestionType(questionItem),
-            question: questionItem.presentation.flow.material.mattext['#text'],
-            choices: await this.extractChoices(questionItem),
-            interactivity: await this.extractInteractivity(questionItem)
+        try {
+            const questionMetadata = {
+                title: questionItem['@_title'],
+                id: questionItem['@_ident'],
+                provider: "ILIAS",
+                type: await this.extractQuestionType(questionItem),
+                question: await this.extractQuestion(questionItem),
+                choices: await this.extractChoices(questionItem),
+                interactivity: await this.extractInteractivity(questionItem)
+            }
+            return questionMetadata;
+        } catch (err) {
+            console.log("Error processing Question " + questionItem['@_ident']);
+            console.log(err);
+            //console.log(JSON.stringify(questionItem));
         }
-        return questionMetadata;
+    },
+
+    async extractQuestion(questionItem) {
+        if (!questionItem.presentation.flow.material.length) {
+            return questionItem.presentation.flow.material.mattext['#text'];
+        } else {
+            var title;
+            for (const materialItem of questionItem.presentation.flow.material) {
+                title += materialItem.mattext['#text'];
+            }
+            return title;
+        }
     },
 
     async extractInteractivity(questionItem) {
@@ -72,13 +90,17 @@ const questionProcessorIlias = {
 
     async extractChoices(questionItem) {
         var choices = [];
-        for (const rawChoice of questionItem.presentation.flow.response_lid.render_choice.response_label) {
-            const choice = {
-                id: rawChoice['@_ident'],
-                text: rawChoice.material.mattext['#text']
-            }
+        if (questionItem.presentation.flow.response_lid) {
+            for (const rawChoice of questionItem.presentation.flow.response_lid.render_choice.response_label) {
+                const choice = {
+                    id: rawChoice['@_ident'],
+                    text: rawChoice.material.mattext['#text']
+                }
 
-            choices.push(choice);
+                choices.push(choice);
+            }
+        } else {
+            console.log("No choices for " + questionItem['@_ident'] + " | Type: " + await this.extractQuestionType(questionItem));
         }
         return choices;
     }
