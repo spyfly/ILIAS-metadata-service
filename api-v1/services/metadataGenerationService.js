@@ -3,6 +3,7 @@ import keyword_extractor from "keyword-extractor";
 import multimediaProcessor from "./multimediaProcessor.js";
 import questionProcessorIlias from "./questionProcessorIlias.js";
 import questionProcessorXhfp from "./questionProcessorXhfp.js";
+import keywordExtractor from "./keywordExtractor.js";
 import { retext } from 'retext'
 import retextPos from 'retext-pos'
 import retextKeywords from 'retext-keywords'
@@ -73,24 +74,7 @@ const metadataGenerationService = {
 
     //Keywords
     if (raw_data["xmlContent"]) {
-      // Remove XML Tags and LaTeX Content
-      const textContent = raw_data["xmlContent"].replace(/<[^>]*>/g, ' ').replace(/(\[tex\])(.*?)(\[\/tex\])/g, ' ');
-      const rawKeywords =
-        keyword_extractor.extract(textContent, {
-          language: "german",
-          remove_digits: true,
-          return_changed_case: true,
-          remove_duplicates: true,
-        });
-
-      // Filter Keywords
-      var keywords = [];
-      for (const keyword of rawKeywords) {
-        if (keyword.length >= 3) {
-          keywords.push(keyword);
-        }
-      }
-      metadataObj.keywords = keywords;
+      metadataObj.keywords = await keywordExtractor.extractKeywords(raw_data["xmlContent"]);
     }
 
     return metadataObj;

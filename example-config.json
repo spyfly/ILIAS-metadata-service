@@ -4,5 +4,8 @@
         "apiKey": "abcdef",
         "username": "root",
         "password": "12345678"
+    },
+    "keywordExtractor": {
+        "apiPath": "http://localhost:5001"
     }
 }
