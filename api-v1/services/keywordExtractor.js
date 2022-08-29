@@ -9,8 +9,9 @@ const instance = axios.create({
 const keywordExtractor = {
     async extractKeywords(xmlContent) {
         const filteredXml = await this.filterXml(xmlContent);
-        const extractedKeywords = await this.callKeyBERT(filteredXml);
-        return extractedKeywords
+        const keyBERTResponse = await this.callKeyBERT(filteredXml);
+        const extractedKeywords = await this.processResponse(keyBERTResponse);
+        return extractedKeywords;
     },
 
     async filterXml(xmlContent) {
@@ -19,6 +20,16 @@ const keywordExtractor = {
         // Remove TeX Content
         const noTexAndXmlTags = noXmlTags.replace(/(\[tex\])(.*?)(\[\/tex\])/g, ' ');
         return noTexAndXmlTags;
+    },
+
+    async processResponse(keyBERTResponse) {
+        var keywords = [];
+        if (keyBERTResponse.length > 0) {
+            for (const [keyword, _] of keyBERTResponse) {
+                keywords.push(keyword);
+            }
+        }
+        return keywords;
     },
 
     async callKeyBERT(input) {
