@@ -11,6 +11,8 @@
 2. Create a new Python venv using `python3 -m venv venv`
 3. Activate the venv using `. venv/bin/activate`
 4. Install KeyBERT and Flask using `pip3 install Flask keybert`
+5. Install Tensorflow, Tensorflow Hub, Pytesseract, Requests and matplotlib using `pip3 install tensorflow tensorflow_hub matplotlib requests pytesseract`
+6. Install tesseract OCR on host os `apt install tesseract-ocr tesseract-ocr-deu`
 
 ## Usage
 
