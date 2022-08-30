@@ -1,12 +1,9 @@
 import iliasRESTApiClient from "./iliasRESTApiClient.js";
-import keyword_extractor from "keyword-extractor";
 import multimediaProcessor from "./multimediaProcessor.js";
 import questionProcessorIlias from "./questionProcessorIlias.js";
 import questionProcessorXhfp from "./questionProcessorXhfp.js";
 import keywordExtractor from "./keywordExtractor.js";
-import { retext } from 'retext'
-import retextPos from 'retext-pos'
-import retextKeywords from 'retext-keywords'
+import readingTimeEstimate from "./readingTimeEstimate.js";
 
 const metadataGenerationService = {
   async generateMetadata(ref_id) {
@@ -77,6 +74,7 @@ const metadataGenerationService = {
     //Keywords
     if (raw_data["xmlContent"]) {
       metadataObj.keywords = await keywordExtractor.extractKeywords(raw_data["xmlContent"]);
+      metadataObj.reading_time = await readingTimeEstimate.getEstimate(raw_data["xmlContent"]);
     }
 
     return metadataObj;
