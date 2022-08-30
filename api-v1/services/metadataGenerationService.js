@@ -13,6 +13,8 @@ const metadataGenerationService = {
     const raw_data = await iliasRESTApiClient.getLearningModule(ref_id);
     if (raw_data["type"] == "lm") {
       return await this.generateLmMetadata(raw_data);
+    } else if (raw_data["type"] == "copa") {
+      return await this.generatePageMetadata(raw_data)
     }
     return raw_data;
   },
