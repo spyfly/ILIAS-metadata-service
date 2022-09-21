@@ -19,9 +19,9 @@ const multimediaProcessor = {
         let multimediaXml = parser.parse(xmlObj);
         var multimediaItems = [];
         if (multimediaXml.MediaObject) {
-            if (multimediaXml.MediaObject.MediaItem && multimediaXml.MediaObject.MediaItem.length) {
-                for (const mediaItem of multimediaXml.MediaObject.MediaItem) {
-                    multimediaItems.push(await this.processMultimediaItem(mediaItem, multimediaXml.MediaObject));
+            if (multimediaXml.MediaObject && multimediaXml.MediaObject.length) {
+                for (const MediaObject of multimediaXml.MediaObject) {
+                    multimediaItems.push(await this.processMultimediaItem(MediaObject.MediaItem, MediaObject));
                 }
             } else if (multimediaXml.MediaObject.MediaItem) {
                 multimediaItems.push(await this.processMultimediaItem(multimediaXml.MediaObject.MediaItem, multimediaXml.MediaObject));
